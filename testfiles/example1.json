@@ -1,0 +1,10 @@
+{
+  "Variables": ["S","BINDIGIT"],
+  "Terminals": ["a", "b","0", "1"],
+  "Productions": [
+    {"head": "S", "body": ["a", "S", "b","BINDIGIT"]},
+    {"head": "S", "body": []},{"head": "BINDIGIT", "body": ["0", "1"]}
+  ],
+  "_comment": "Symbols may be multiple characters long, this is why each character in the body is it'sown string.",
+  "Start": "S"
+}
