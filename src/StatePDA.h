@@ -13,15 +13,14 @@
 
 enum stackAction { pop, push, nothing, none };
 
-class StatePDA
+struct StatePDA
 {
-private:
-    std::map<std::pair<std::string, std::string>, std::tuple<StatePDA*, stackAction, std::string >> transitions;
-public:
+    using Action = std::tuple<StatePDA*, stackAction, std::string >;
+
+    std::map<std::pair<std::string, std::string>, Action> transitions;
     StatePDA(std::string name) {stateName = name;};
     std::string stateName;
-    std::tuple<StatePDA*, stackAction, std::string> getTransition(std::pair<std::string, std::string> input);
-    std::vector<StatePDA*> getEclosure(std::string stackTop);
+    Action getTransition(std::string symbol, std::string stackSymbol);
     void addTransition(std::pair<std::string, std::string> input , StatePDA* state, stackAction action, std::string stackValue="");
 };
 

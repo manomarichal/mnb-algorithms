@@ -15,9 +15,11 @@ private:
     std::vector<StatePDA*> endStates;
     StatePDA* startState;
     std::string startStackSymbol;
-    std::map<StatePDA* , std::stack<std::string>*> currentState;
+    std::map<StatePDA* , std::stack<std::string>> currentState;
 public:
     PDA();
+
+    bool doAction (StatePDA::Action &action, std::stack<std::string>* stack);
 
     void setAlphabet(const std::vector<std::string> &alphabet);
 

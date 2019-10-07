@@ -9,45 +9,59 @@ PDA::PDA()
 }
 bool PDA::transition(std::string &input)
 {
-    std::map<StatePDA* , std::stack<std::string>*> newState;
+    std::map<StatePDA* , std::stack<std::string>> newState;
 
     for (auto &state:currentState)
     {
-        std::string stackTop = state.second->top();
+        std::string stackTop = state.second.top();
 
-        std::tuple<StatePDA*, stackAction, std::string> nextAction = state.first->getTransition({input, stackTop});
-        if (std::get<1>(nextAction) == none)
+        std::tuple<StatePDA*, stackAction, std::string> nextAction = state.first->getTransition(input, stackTop);
+
+        if (!doAction(nextAction, &state.second)) continue;
+
+        for (auto &trans: std::get<0>(nextAction)->transitions)
         {
-            continue;
-        }
-        if (std::get<1>(nextAction) == push)
-        {
-            for(auto symbol: std::get<2>(nextAction))
+            if (trans.first.first == "" and trans.first.second == state.second.top())
             {
-                state.second->push(std::string(1, symbol));
+                std::stack<std::string> tempStack = state.second;
+                doAction(trans.second, &tempStack);
+                newState[std::get<0>(trans.second)] = tempStack;
             }
-
         }
-        else if (std::get<1>(nextAction) == pop)
-        {
-            state.second->pop();
-        }
-
-        for (auto &eState: std::get<0>(nextAction)->getEclosure(state.second->top()))
-        {
-            newState[eState] = state.second;
-        };
 
         newState[std::get<0>(nextAction)] = state.second;
     }
     currentState = newState;
 }
 
+bool PDA::doAction(StatePDA::Action &action, std::stack<std::string> *stack)
+{
+    if (std::get<1>(action) == none)
+    {
+        return false;
+    }
+
+    if (std::get<1>(action) == push)
+    {
+        for(auto symbol: std::get<2>(action))
+        {
+            stack->push(std::string(1, symbol));
+        }
+
+    }
+    else if (std::get<1>(action) == pop)
+    {
+        stack->pop();
+    }
+    return true;
+}
+
+
 bool PDA::inputString(std::string input)
 {
     std::stack<std::string> tempStack;
     tempStack.push(startStackSymbol);
-    currentState[startState] = &tempStack;
+    currentState[startState] = tempStack;
 
     for (auto symbol:input)
     {
