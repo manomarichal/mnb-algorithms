@@ -6,6 +6,8 @@
 #define CFG_PDA_H
 
 #include "StatePDA.h"
+#include <fstream>
+#include <iostream>
 
 class PDA {
 private:
@@ -37,6 +39,7 @@ public:
 
     bool inputString(std::string input);
 
+    void convertToDot(std::string filename);
 };
 
 

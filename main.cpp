@@ -8,12 +8,12 @@ int main() {
     StatePDA q1("q1");
     StatePDA qf("qf");
 
-    q0.addTransition({"a", "a"}, &q0, push, "aa");
-    q0.addTransition({"a", "Z"}, &q0, push, "aa");
+    q0.addTransition({"a", "a"}, &q0, push, "aaa");
+    q0.addTransition({"a", "Z"}, &q0, push, "aaZ");
     q0.addTransition({"b", "a"}, &q1, pop);
 
     q1.addTransition({"b", "a"}, &q1 ,pop);
-    q1.addTransition({"", "Z"}, &qf ,nothing);
+    q1.addTransition({"", "Z"}, &qf ,nothing, "Z");
 
 
     PDA pda;
@@ -31,6 +31,7 @@ int main() {
 
     else
         std::cout << "string was not accepted" << std::endl;
+
     if (pda.inputString("aab"))
     {
         std::cout << "string was accepted" << std::endl;
@@ -38,6 +39,8 @@ int main() {
     else
         std::cout << "string was not accepted" << std::endl;
 
-
+    pda.convertToDot("pda.dot");
+    std::string dotstring = "dot -Tpng ./pda.dot -o pda.png";
+    system(dotstring.c_str());
     return 0;
 }

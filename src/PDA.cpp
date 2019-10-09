@@ -4,6 +4,11 @@
 
 #include "PDA.h"
 
+std::string epsilon(std::string s)
+{
+    if (s.empty()) return "epsilon";
+    else return s;
+}
 PDA::PDA()
 {
 }
@@ -28,10 +33,11 @@ bool PDA::transition(std::string &input)
                 newState[std::get<0>(trans.second)] = tempStack;
             }
         }
-
         newState[std::get<0>(nextAction)] = state.second;
     }
     currentState = newState;
+
+    return true;
 }
 
 bool PDA::doAction(StatePDA::Action &action, std::stack<std::string> *stack)
@@ -43,10 +49,12 @@ bool PDA::doAction(StatePDA::Action &action, std::stack<std::string> *stack)
 
     if (std::get<1>(action) == push)
     {
-        for(auto symbol: std::get<2>(action))
+        // we push every character except the last one
+        for (ulong k=0;k<std::get<2>(action).length()-1;k++)
         {
-            stack->push(std::string(1, symbol));
+            stack->push(std::string(1, std::get<2>(action)[k]));
         }
+
 
     }
     else if (std::get<1>(action) == pop)
@@ -79,6 +87,56 @@ bool PDA::inputString(std::string input)
 
     return false;
 }
+
+void PDA::convertToDot(std::string filename)
+{
+    std::fstream file;
+    file.open(filename, std::fstream::out);
+    file << "digraph {\n" << std::endl;
+
+    for (auto state:endStates)
+    {
+         file << state->stateName << "[peripheries=2]" << std::endl;
+    }
+
+    std::vector<StatePDA*> used;
+
+    for (const auto &state:states)
+    {
+        for (const auto &end:states)
+        {
+            std::string transition;
+
+            for (const auto &trans:state->transitions)
+            {
+                if (std::get<0>(trans.second)->stateName == end->stateName)
+                {
+                    if (!transition.empty()) transition += "\n";
+                    transition += "(" + epsilon(trans.first.first) + ", " + epsilon(trans.first.second)
+                            + "/" + epsilon(std::get<2>(trans.second)) + ")";
+
+                }
+            }
+
+            if (transition.empty()) continue;
+            file  << state->stateName << "->" << end->stateName << "[label=\"" <<
+                  transition << "\"]" << ";" << std::endl;
+        }
+    }
+    for (const auto &state:states)
+    {
+        for (const auto &trans:state->transitions)
+        {
+
+        }
+    }
+    // start state
+    file << "head [style=invis]\n   head->" << startState->stateName << std::endl;
+    file  << "}";
+
+    file.close();
+}
+
 void PDA::setAlphabet(const std::vector<std::string> &alphabet) {
     PDA::alphabet = alphabet;
 }
