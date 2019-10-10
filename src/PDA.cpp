@@ -52,7 +52,7 @@ bool PDA::doAction(StatePDA::Action &action, std::stack<std::string> *stack)
 
     if (std::get<1>(action) == push)
     {
-        // we push every character except the last one
+        // we push every character except the last one from the action
         for (ulong k=0;k<std::get<2>(action).length()-1;k++)
         {
             stack->push(std::string(1, std::get<2>(action)[k]));
@@ -100,14 +100,27 @@ void PDA::convertToDot(std::string filename)
 
     for (auto state:endStates)
     {
-         file << state->stateName << "[peripheries=2, image=\"arch.png\", label=\"" << state->stateName << "\" imagescale=true, labelloc=b]" << std::endl;
+         file << state->stateName << "[peripheries=2, image=\"else.png\", label=\"" << state->stateName << "\" imagescale=true, labelloc=t]" << std::endl;
     }
 
     std::vector<StatePDA*> used;
 
     for (const auto &state:states)
     {
-        file << state->stateName << "[image=\"arch.png\", label=\""<< state->stateName << "\",imagescale=true, labelloc=b]" << std::endl;
+        std::string pic;
+        std::string p;
+        if (rand()%2 == 0)
+        {
+            pic = "\"else.png\"";
+            p = "t";
+        }
+        else
+        {
+            pic = "\"tom.png\"";
+            p = "b";
+        }
+
+        file << state->stateName << "[image=" << pic << ", label=\""<< state->stateName << "\",imagescale=true, labelloc="<< p <<"]" << std::endl;
 
         for (const auto &end:states)
         {
