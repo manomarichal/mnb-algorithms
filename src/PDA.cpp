@@ -6,7 +6,7 @@
 
 std::string epsilon(std::string s)
 {
-    if (s.empty()) return "epsilon";
+    if (s.empty()) return "ε";
     else return s;
 }
 PDA::PDA()
@@ -20,10 +20,13 @@ bool PDA::transition(std::string &input)
     {
         std::string stackTop = state.second.top();
 
+        // get next action
         std::tuple<StatePDA*, stackAction, std::string> nextAction = state.first->getTransition(input, stackTop);
 
+        // stack action
         if (!doAction(nextAction, &state.second)) continue;
 
+        // look for possible epsilon transitions
         for (auto &trans: std::get<0>(nextAction)->transitions)
         {
             if (trans.first.first == "" and trans.first.second == state.second.top())
@@ -93,16 +96,19 @@ void PDA::convertToDot(std::string filename)
     std::fstream file;
     file.open(filename, std::fstream::out);
     file << "digraph {\n" << std::endl;
+    file << "rankdir = LR" << std::endl;
 
     for (auto state:endStates)
     {
-         file << state->stateName << "[peripheries=2]" << std::endl;
+         file << state->stateName << "[peripheries=2, image=\"arch.png\", label=\"" << state->stateName << "\" imagescale=true, labelloc=b]" << std::endl;
     }
 
     std::vector<StatePDA*> used;
 
     for (const auto &state:states)
     {
+        file << state->stateName << "[image=\"arch.png\", label=\""<< state->stateName << "\",imagescale=true, labelloc=b]" << std::endl;
+
         for (const auto &end:states)
         {
             std::string transition;
