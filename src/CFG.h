@@ -6,6 +6,7 @@
 #define CFG_CFG_H
 
 #include "../json/json.hpp"
+#include "../src/PDA.h"
 #include <iostream>
 #include <fstream>
 
@@ -19,6 +20,8 @@ private:
 public:
     CFG(std::string filename);
     void print();
+    PDA convertToPda();
+
 };
 
 

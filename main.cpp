@@ -8,12 +8,12 @@ int main() {
     StatePDA q1("q1");
     StatePDA qf("qf");
 
-    q0.addTransition({"a", "a"}, &q0, push, "aaa");
-    q0.addTransition({"a", "Z"}, &q0, push, "aaZ");
+    q0.addTransition({"a", "a"}, &q0, push, {"a", "a", "a"});
+    q0.addTransition({"a", "Z"}, &q0, push, {"a", "a", "Z"});
     q0.addTransition({"b", "a"}, &q1, pop);
 
     q1.addTransition({"b", "a"}, &q1 ,pop);
-    q1.addTransition({"", "Z"}, &qf ,nothing, "Z");
+    q1.addTransition({"", "Z"}, &qf ,nothing, {"Z"});
 
 
     PDA pda;
@@ -42,5 +42,13 @@ int main() {
     pda.convertToDot("pda.dot");
     std::string dotstring = "dot -Tpng ./pda.dot -o pda.png";
     system(dotstring.c_str());
+
+    CFG cfg("./testfiles/example1.json");
+    PDA pda2 = cfg.convertToPda();
+
+    pda2.convertToDot("pda2.dot");
+    std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
+    system(dotstring2.c_str());
+
     return 0;
 }

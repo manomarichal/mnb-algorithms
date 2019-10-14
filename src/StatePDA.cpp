@@ -13,12 +13,12 @@ StatePDA::Action StatePDA::getTransition(std::string symbol, std::string stackSy
             return transition.second;
         };
     }
-    std::tuple<StatePDA*, stackAction, std::string> returnVal ={NULL, none, ""};
+    Action returnVal ={NULL, none, {""}};
 
     return returnVal;
 }
 
-void StatePDA::addTransition(std::pair<std::string, std::string> input, StatePDA *state, stackAction action, std::string stackValue)
+void StatePDA::addTransition(std::pair<std::string, std::string> input, StatePDA *state, stackAction action, std::vector<std::string> stackValue)
 {
     transitions[input] = {state, action, stackValue};
 }

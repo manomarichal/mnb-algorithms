@@ -4,7 +4,21 @@
 
 #include "PDA.h"
 
-std::string epsilon(std::string s)
+std::string epsilon(std::vector<std::string> s)
+{
+    if (s.empty()) return "ε";
+    else if (s[0].empty()) return "ε";
+    else {
+        std::string rVal;
+        for (auto string: s)
+        {
+            rVal+=string;
+        }
+        return rVal;
+    }
+}
+
+std::string cEpsilon(const std::string &s)
 {
     if (s.empty()) return "ε";
     else return s;
@@ -21,7 +35,7 @@ bool PDA::transition(std::string &input)
         std::string stackTop = state.second.top();
 
         // get next action
-        std::tuple<StatePDA*, stackAction, std::string> nextAction = state.first->getTransition(input, stackTop);
+        StatePDA::Action nextAction = state.first->getTransition(input, stackTop);
 
         // stack action
         if (!doAction(nextAction, &state.second)) continue;
@@ -52,12 +66,12 @@ bool PDA::doAction(StatePDA::Action &action, std::stack<std::string> *stack)
 
     if (std::get<1>(action) == push)
     {
-        // we push every character except the last one from the action
-        for (ulong k=0;k<std::get<2>(action).length()-1;k++)
-        {
-            stack->push(std::string(1, std::get<2>(action)[k]));
-        }
+        // we push every symbol except the last one from the action
 
+        for (u_long i=0;i<std::get<2>(action).size()-1;i++)
+        {
+            stack->push(std::get<2>(action)[i]);
+        }
 
     }
     else if (std::get<1>(action) == pop)
@@ -100,27 +114,15 @@ void PDA::convertToDot(std::string filename)
 
     for (auto state:endStates)
     {
-         file << state->stateName << "[peripheries=2, image=\"else.png\", label=\"" << state->stateName << "\" imagescale=true, labelloc=t]" << std::endl;
+         file << state->stateName << "[peripheries=2, label=\"" << state->stateName << "\"]" << std::endl;
     }
 
     std::vector<StatePDA*> used;
 
     for (const auto &state:states)
     {
-        std::string pic;
-        std::string p;
-        if (rand()%2 == 0)
-        {
-            pic = "\"else.png\"";
-            p = "t";
-        }
-        else
-        {
-            pic = "\"tom.png\"";
-            p = "b";
-        }
 
-        file << state->stateName << "[image=" << pic << ", label=\""<< state->stateName << "\",imagescale=true, labelloc="<< p <<"]" << std::endl;
+        file << state->stateName << "[label=\""<< state->stateName << "\"]" << std::endl;
 
         for (const auto &end:states)
         {
@@ -131,7 +133,7 @@ void PDA::convertToDot(std::string filename)
                 if (std::get<0>(trans.second)->stateName == end->stateName)
                 {
                     if (!transition.empty()) transition += "\n";
-                    transition += "(" + epsilon(trans.first.first) + ", " + epsilon(trans.first.second)
+                    transition += "(" + cEpsilon(trans.first.first) + ", " + cEpsilon(trans.first.second)
                             + "/" + epsilon(std::get<2>(trans.second)) + ")";
 
                 }
@@ -179,3 +181,4 @@ void PDA::setStates(const std::vector<StatePDA *> &states) {
 void PDA::setEndStates(const std::vector<StatePDA *> &endStates) {
     PDA::endStates = endStates;
 }
+

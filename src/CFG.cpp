@@ -52,3 +52,34 @@ void CFG::print()
     }
 
 }
+
+PDA CFG::convertToPda()
+{
+    StatePDA* q = new StatePDA("q");
+
+    PDA pda;
+    pda.setStartStackSymbol(start);
+    pda.setAlphabet(terminals);
+    pda.setStates({q});
+    pda.setStartState(q);
+
+    std::vector<std::string> stackAlphabet;
+    stackAlphabet.reserve( terminals.size() + variables.size() ); // preallocate memory
+    stackAlphabet.insert( stackAlphabet.end(), terminals.begin(), terminals.end() );
+    stackAlphabet.insert( stackAlphabet.end(), variables.begin(), variables.end() );
+    pda.setStackAlphabet(stackAlphabet);
+
+    for (const auto &var:variables)
+    {
+        for (const auto &production:productions[var])
+        {
+            q->addTransition( {"", var}, q, push, production);
+        }
+    }
+
+    for (const auto &terminal:terminals)
+    {
+        q->addTransition({"", terminal}, q, pop);
+    }
+    return pda;
+}
