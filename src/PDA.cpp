@@ -182,3 +182,27 @@ void PDA::setEndStates(const std::vector<StatePDA *> &endStates) {
     PDA::endStates = endStates;
 }
 
+const std::vector<std::string> &PDA::getAlphabet() const {
+    return alphabet;
+}
+
+const std::vector<std::string> &PDA::getStackAlphabet() const {
+    return stackAlphabet;
+}
+
+const std::vector<StatePDA *> &PDA::getStates() const {
+    return states;
+}
+
+const std::vector<StatePDA *> &PDA::getEndStates() const {
+    return endStates;
+}
+
+StatePDA *PDA::getStartState() const {
+    return startState;
+}
+
+const std::string &PDA::getStartStackSymbol() const {
+    return startStackSymbol;
+}
+

@@ -23,3 +23,7 @@ void StatePDA::addTransition(std::pair<std::string, std::string> input, StatePDA
     transitions[input] = {state, action, stackValue};
 }
 
+const std::map<std::pair<std::string, std::string>, StatePDA::Action> &StatePDA::getTransitions() const {
+    return transitions;
+}
+

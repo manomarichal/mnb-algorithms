@@ -2,6 +2,7 @@
 #include "./src/CFG.h"
 #include "./src/PDA.h"
 #include "./src/StatePDA.h"
+#include "./src/algorithms.h"
 int main() {
 
     StatePDA q0("q0");
@@ -22,33 +23,20 @@ int main() {
     pda.setStartStackSymbol("Z");
     pda.setStates({&q0, &q1, &qf});
     pda.setEndStates({&qf});
+    pda.setStackAlphabet({"a", "Z"});
 
-
-    if (pda.inputString("aabbbb"))
-    {
-        std::cout << "string was accepted" << std::endl;
-    }
-
-    else
-        std::cout << "string was not accepted" << std::endl;
-
-    if (pda.inputString("aab"))
-    {
-        std::cout << "string was accepted" << std::endl;
-    }
-    else
-        std::cout << "string was not accepted" << std::endl;
-
-    pda.convertToDot("pda.dot");
-    std::string dotstring = "dot -Tpng ./pda.dot -o pda.png";
-    system(dotstring.c_str());
-
+    // CFG TO PDA
     CFG cfg("./testfiles/example1.json");
-    PDA pda2 = cfg.convertToPda();
+    PDA pda2 = convertToPda(cfg);
 
     pda2.convertToDot("pda2.dot");
     std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
     system(dotstring2.c_str());
+
+
+    // PDA TO CFG
+    CFG cfg2 = convertToCfg(pda);
+    cfg2.print();
 
     return 0;
 }

@@ -40,6 +40,18 @@ public:
     bool inputString(std::string input);
 
     void convertToDot(std::string filename);
+
+    const std::vector<std::string> &getAlphabet() const;
+
+    const std::vector<std::string> &getStackAlphabet() const;
+
+    const std::vector<StatePDA *> &getStates() const;
+
+    const std::vector<StatePDA *> &getEndStates() const;
+
+    StatePDA *getStartState() const;
+
+    const std::string &getStartStackSymbol() const;
 };
 
 

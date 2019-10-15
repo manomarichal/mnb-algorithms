@@ -42,7 +42,7 @@ void CFG::print()
             if (body->empty()) std::cout << "e";
             else for (auto var: *body)
             {
-                std::cout << var << " ";
+                std::cout << var;
             }
 
             if (std::next(body) != production.second.end()) std::cout << "| ";
@@ -53,33 +53,44 @@ void CFG::print()
 
 }
 
-PDA CFG::convertToPda()
+void CFG::addProduction(std::string top, std::string body)
 {
-    StatePDA* q = new StatePDA("q");
-
-    PDA pda;
-    pda.setStartStackSymbol(start);
-    pda.setAlphabet(terminals);
-    pda.setStates({q});
-    pda.setStartState(q);
-
-    std::vector<std::string> stackAlphabet;
-    stackAlphabet.reserve( terminals.size() + variables.size() ); // preallocate memory
-    stackAlphabet.insert( stackAlphabet.end(), terminals.begin(), terminals.end() );
-    stackAlphabet.insert( stackAlphabet.end(), variables.begin(), variables.end() );
-    pda.setStackAlphabet(stackAlphabet);
-
-    for (const auto &var:variables)
+    std::vector<std::string> newBody;
+    for (const auto &s:body)
     {
-        for (const auto &production:productions[var])
-        {
-            q->addTransition( {"", var}, q, push, production);
-        }
+        newBody.emplace_back(std::string(1, s));
     }
+    productions[top].emplace_back(newBody);
+}
 
-    for (const auto &terminal:terminals)
-    {
-        q->addTransition({"", terminal}, q, pop);
-    }
-    return pda;
+const std::vector<std::string> &CFG::getVariables() const {
+    return variables;
+}
+
+const std::vector<std::string> &CFG::getTerminals() const {
+    return terminals;
+}
+
+const std::string &CFG::getStart() const {
+    return start;
+}
+
+std::map<std::string, std::vector<std::vector<std::string>>> &CFG::getProductions() {
+    return productions;
+}
+
+void CFG::setVariables(const std::vector<std::string> &variables) {
+    CFG::variables = variables;
+}
+
+void CFG::setTerminals(const std::vector<std::string> &terminals) {
+    CFG::terminals = terminals;
+}
+
+void CFG::setStart(const std::string &start) {
+    CFG::start = start;
+}
+
+void CFG::setProductions(const std::map<std::string, std::vector<std::vector<std::string>>> &productions) {
+    CFG::productions = productions;
 }
