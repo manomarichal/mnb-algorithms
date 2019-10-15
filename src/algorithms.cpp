@@ -35,7 +35,7 @@ PDA convertToPda(CFG &cfg)
     return pda;
 }
 
-void generateBody(std::string stack, std::string body, PDA &pda, CFG &cfg, const std::string &top)
+void generateBody(std::vector<std::string> stack, std::string body, PDA &pda, CFG &cfg, const std::string &top)
 {
     if (stack.empty())
     {
@@ -44,13 +44,14 @@ void generateBody(std::string stack, std::string body, PDA &pda, CFG &cfg, const
             body += state->stateName + "]";
             cfg.addProduction(top, body);
         }
-        return ;
+        return;
     }
     for (const auto &state:pda.getStates())
     {
-        body+=state->stateName + "][" + state->stateName + std::string(1,stack[0]);
-
-        generateBody(stack.substr(1,stack.size()-2), body, pda, cfg, top);
+        body+=stack[0] + state->stateName + "][" + state->stateName;
+        std::vector<std::string> newstack = stack;
+        newstack.erase(stack.begin());
+        generateBody(newstack, body, pda, cfg, top);
     }
 }
 
@@ -85,7 +86,7 @@ CFG convertToCfg(PDA &pda)
         //productions for the rest
         for (const auto &transition:v1->getTransitions())
         {
-            generateBody(std::get<2>(transition.second, ))
+            generateBody( std::get<2>(transition.second), transition.first.first + "[" + v1->stateName, pda, cfg, v1->stateName + transition.first.second + std::get<0>(transition.second)->stateName);
         }
     }
 

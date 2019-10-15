@@ -58,7 +58,7 @@ void CFG::addProduction(std::string top, std::string body)
     std::vector<std::string> newBody;
     for (const auto &s:body)
     {
-        newBody.emplace_back(std::string(1, s));
+        newBody.emplace_back(1, s);
     }
     productions[top].emplace_back(newBody);
 }
