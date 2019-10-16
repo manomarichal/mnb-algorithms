@@ -35,17 +35,15 @@ void CFG::print()
 {
     for (auto& production:productions)
     {
-        std::cout<<production.first << " -> ";
-
         for (auto body = production.second.begin();body != production.second.end();body++)
         {
+            std::cout << "\n" <<production.first << " -> ";
+
             if (body->empty()) std::cout << "e";
             else for (auto var: *body)
             {
                 std::cout << var;
             }
-
-            if (std::next(body) != production.second.end()) std::cout << "| ";
         }
 
         std::cout << std::endl;
@@ -55,10 +53,11 @@ void CFG::print()
 
 void CFG::addProduction(std::string top, std::string body)
 {
-    std::vector<std::string> newBody;
-    for (const auto &s:body)
+    std::vector<std::string> newBody = {};
+    for (int i=0;i<body.size();i++)
     {
-        newBody.emplace_back(1, s);
+        std::string temp = body.substr(i, 1);
+        newBody.emplace_back(temp);
     }
     productions[top].emplace_back(newBody);
 }

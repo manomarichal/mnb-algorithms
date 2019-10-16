@@ -5,33 +5,34 @@
 #include "./src/algorithms.h"
 int main() {
 
-    StatePDA q0("q0");
-    StatePDA q1("q1");
-    StatePDA qf("qf");
+    StatePDA p("p");
+    StatePDA q("q");
 
-    q0.addTransition({"a", "a"}, &q0, push, {"a", "a", "a"});
-    q0.addTransition({"a", "Z"}, &q0, push, {"a", "a", "Z"});
-    q0.addTransition({"b", "a"}, &q1, pop);
+    q.addTransition({"1", "Z0"}, &q, push, {"X", "z0"});
+    q.addTransition({"1", "X"}, &q, push, {"X", "X"});
+    q.addTransition({"0", "X"}, &p, nothing, {"X"});
+    q.addTransition({"", "X"}, &q, pop);
 
-    q1.addTransition({"b", "a"}, &q1 ,pop);
-    q1.addTransition({"", "Z"}, &qf ,nothing, {"Z"});
-
+    p.addTransition({"1", "X"}, &p, pop);
+    p.addTransition({"0", "Z0"}, &q, nothing, {"Z0"});
 
     PDA pda;
-    pda.setAlphabet({"a", "b"});
-    pda.setStartState(&q0);
-    pda.setStartStackSymbol("Z");
-    pda.setStates({&q0, &q1, &qf});
-    pda.setEndStates({&qf});
-    pda.setStackAlphabet({"a", "Z"});
+    pda.setAlphabet({"1", "0"});
+    pda.setStartState(&q);
+    pda.setStartStackSymbol("Z0");
+    pda.setStates({&q, &p});
+    pda.setEndStates({&p});
+    pda.setStackAlphabet({"X", "Z0"});
 
     // CFG TO PDA
+    /*
     CFG cfg("./testfiles/example1.json");
     PDA pda2 = convertToPda(cfg);
 
     pda2.convertToDot("pda2.dot");
     std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
     system(dotstring2.c_str());
+     */
 
 
     // PDA TO CFG
