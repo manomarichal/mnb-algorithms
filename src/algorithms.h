@@ -8,7 +8,6 @@
 #include "./CFG.h"
 #include "./PDA.h"
 
-PDA convertToPda(CFG &cfg);
 CFG convertToCfg(PDA &pda);
 
 

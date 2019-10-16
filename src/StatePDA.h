@@ -19,6 +19,7 @@ struct StatePDA
 
     std::map<std::pair<std::string, std::string>, Action> transitions;
     StatePDA(std::string name) {stateName = name;};
+    StatePDA() = default;
     std::string stateName;
     Action getTransition(std::string symbol, std::string stackSymbol);
     void addTransition(std::pair<std::string, std::string> input , StatePDA* state, stackAction action, std::vector<std::string> stackValue= std::vector<std::string>(0, ""));

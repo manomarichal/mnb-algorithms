@@ -26,6 +26,15 @@ std::string cEpsilon(const std::string &s)
 PDA::PDA()
 {
 }
+
+StatePDA* PDA::findState(std::string name)
+{
+    for (auto &state:states)
+    {
+        if (state.stateName == name) return &state;
+    }
+    return nullptr;
+}
 bool PDA::transition(std::string &input)
 {
     std::map<StatePDA* , std::stack<std::string>> newState;
@@ -86,7 +95,16 @@ bool PDA::inputString(std::string input)
 {
     std::stack<std::string> tempStack;
     tempStack.push(startStackSymbol);
-    currentState[startState] = tempStack;
+    currentState[&startState] = tempStack;
+    // check eclosure startstate
+    for (auto &trans:startState.getTransitions())
+    {
+        if (trans.first.first == "")
+        {
+            currentState[std::get<0>(trans.second)] = tempStack;
+        }
+    }
+
 
     for (auto symbol:input)
     {
@@ -96,10 +114,7 @@ bool PDA::inputString(std::string input)
 
     for (auto &state:currentState)
     {
-        for (auto endState:endStates)
-        {
-            if (state.first->stateName == endState->stateName) return true;
-        }
+        if (state.second.empty()) return true;
     }
 
     return false;
@@ -122,15 +137,15 @@ void PDA::convertToDot(std::string filename)
     for (const auto &state:states)
     {
 
-        file << state->stateName << "[label=\""<< state->stateName << "\"]" << std::endl;
+        file << state.stateName << "[label=\""<< state.stateName << "\"]" << std::endl;
 
         for (const auto &end:states)
         {
             std::string transition;
 
-            for (const auto &trans:state->transitions)
+            for (const auto &trans:state.transitions)
             {
-                if (std::get<0>(trans.second)->stateName == end->stateName)
+                if (std::get<0>(trans.second)->stateName == end.stateName)
                 {
                     if (!transition.empty()) transition += "\n";
                     transition += "(" + cEpsilon(trans.first.first) + ", " + cEpsilon(trans.first.second)
@@ -140,19 +155,19 @@ void PDA::convertToDot(std::string filename)
             }
 
             if (transition.empty()) continue;
-            file  << state->stateName << "->" << end->stateName << "[label=\"" <<
+            file  << state.stateName << "->" << end.stateName << "[label=\"" <<
                   transition << "\"]" << ";" << std::endl;
         }
     }
     for (const auto &state:states)
     {
-        for (const auto &trans:state->transitions)
+        for (const auto &trans:state.transitions)
         {
 
         }
     }
     // start state
-    file << "head [style=invis]\n   head->" << startState->stateName << std::endl;
+    file << "head [style=invis]\n   head->" << startState.stateName << std::endl;
     file  << "}";
 
     file.close();
@@ -167,14 +182,14 @@ void PDA::setStackAlphabet(const std::vector<std::string> &stackAlphabet) {
 }
 
 void PDA::setStartState(StatePDA *startState) {
-    PDA::startState = startState;
+    PDA::startState = *startState;
 }
 
 void PDA::setStartStackSymbol(const std::string &startStackSymbol) {
     PDA::startStackSymbol = startStackSymbol;
 }
 
-void PDA::setStates(const std::vector<StatePDA *> &states) {
+void PDA::setStates(const std::vector<StatePDA > &states) {
     PDA::states = states;
 }
 
@@ -190,7 +205,7 @@ const std::vector<std::string> &PDA::getStackAlphabet() const {
     return stackAlphabet;
 }
 
-const std::vector<StatePDA *> &PDA::getStates() const {
+const std::vector<StatePDA> &PDA::getStates() const {
     return states;
 }
 
@@ -198,11 +213,59 @@ const std::vector<StatePDA *> &PDA::getEndStates() const {
     return endStates;
 }
 
-StatePDA *PDA::getStartState() const {
-    return startState;
-}
-
 const std::string &PDA::getStartStackSymbol() const {
     return startStackSymbol;
+}
+
+PDA::PDA(std::string filename)
+{
+    std::ifstream file(filename);
+    nlohmann::json root;
+    file >> root;
+
+    for (auto &var: root["Alphabet"])
+    {
+        alphabet.emplace_back(var);
+    }
+
+
+    for (auto &var: root["StackAlphabet"])
+    {
+        stackAlphabet.emplace_back(var);
+        if (root["StackAlphabet"] == var) startStackSymbol = var;
+    }
+
+    for (std::string name: root["States"])
+    {
+        StatePDA temp(name);
+        states.emplace_back(temp);
+        if (root["StartState"] == temp.stateName)
+        {
+            startState = temp;
+        }
+
+    }
+
+
+    for (auto &state:states)
+    {
+        for (auto &trans:root["Transitions"])
+        {
+            if (trans["from"] == state.stateName)
+            {
+                stackAction action = none;
+                if (trans["replacement"].empty()) action = pop;
+                else if (trans["replacement"].size() == 1) action = nothing;
+                else action = push;
+                state.addTransition({trans["input"], trans["stacktop"]}, findState(trans["to"]), action, trans["replacement"]);
+            }
+        }
+    }
+
+    return;
+}
+
+const StatePDA &PDA::getStartState() const {
+    return startState;
 }
 

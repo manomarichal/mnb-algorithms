@@ -20,24 +20,21 @@ int main() {
     pda.setAlphabet({"1", "0"});
     pda.setStartState(&q);
     pda.setStartStackSymbol("Z0");
-    pda.setStates({&q, &p});
+    pda.setStates({q, p});
     pda.setEndStates({&p});
     pda.setStackAlphabet({"X", "Z0"});
-
-    // CFG TO PDA
-    /*
-    CFG cfg("./testfiles/example1.json");
-    PDA pda2 = convertToPda(cfg);
-
-    pda2.convertToDot("pda2.dot");
-    std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
-    system(dotstring2.c_str());
-     */
-
 
     // PDA TO CFG
     CFG cfg2 = convertToCfg(pda);
     cfg2.print();
+
+    // INLEZEN PDA
+    PDA pda2("./testfiles/pda1.json");
+    pda2.convertToDot("pda2.dot");
+    std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
+    system(dotstring2.c_str());
+
+    if (pda2.inputString("aabbbb")) std::cout << "string geaccepteerd";
 
     return 0;
 }
