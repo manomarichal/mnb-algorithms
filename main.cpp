@@ -21,7 +21,7 @@ int main() {
     pda.setStartState(&q);
     pda.setStartStackSymbol("Z0");
     pda.setStates({q, p});
-    pda.setEndStates({&p});
+    pda.setEndStates({p.stateName});
     pda.setStackAlphabet({"X", "Z0"});
 
     // PDA TO CFG
@@ -34,7 +34,13 @@ int main() {
     std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
     system(dotstring2.c_str());
 
-    if (pda2.inputString("aabbbb")) std::cout << "string geaccepteerd";
+    PDA pda3("./testfiles/PDA.json");
+    pda3.convertToDot("pda3.dot");
+    std::string dotstring3 = "dot -Tpng ./pda3.dot -o pda3.png";
+    system(dotstring3.c_str());
+
+
+    if (pda3.inputString("aabbbb")) std::cout << "string geaccepteerd";
 
     return 0;
 }

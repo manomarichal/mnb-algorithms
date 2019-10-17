@@ -15,12 +15,13 @@ private:
     std::vector<std::string> alphabet;
     std::vector<std::string> stackAlphabet;
     std::vector<StatePDA> states;
-    std::vector<StatePDA> realStates;
-    std::vector<StatePDA*> endStates;
+    std::vector<std::string> endStates;
     StatePDA startState;
     std::string startStackSymbol;
     std::map<StatePDA* , std::stack<std::string>> currentState;
     StatePDA* findState(std::string name);
+    bool finalState = false;
+
 public:
     PDA();
 
@@ -34,7 +35,7 @@ public:
 
     void setStates(const std::vector<StatePDA> &states);
 
-    void setEndStates(const std::vector<StatePDA *> &endStates);
+    void setEndStates(const std::vector<std::string> &endStates);
 
     void setStartState(StatePDA *startState);
 
@@ -52,7 +53,7 @@ public:
 
     const std::vector<StatePDA> &getStates() const;
 
-    const std::vector<StatePDA *> &getEndStates() const;
+    const std::vector<std::string> &getEndStates() const;
 
     const std::string &getStartStackSymbol() const;
 

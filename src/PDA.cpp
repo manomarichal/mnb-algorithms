@@ -114,7 +114,14 @@ bool PDA::inputString(std::string input)
 
     for (auto &state:currentState)
     {
-        if (state.second.empty()) return true;
+        if (state.second.empty() and !finalState) return true;
+        else if (finalState)
+        {
+            for (auto &fstate:endStates)
+            {
+                if (state.first->stateName == fstate) return true;
+            }
+        }
     }
 
     return false;
@@ -129,7 +136,7 @@ void PDA::convertToDot(std::string filename)
 
     for (auto state:endStates)
     {
-         file << state->stateName << "[peripheries=2, label=\"" << state->stateName << "\"]" << std::endl;
+         file << state << "[peripheries=2, label=\"" << state << "\"]" << std::endl;
     }
 
     std::vector<StatePDA*> used;
@@ -193,7 +200,7 @@ void PDA::setStates(const std::vector<StatePDA > &states) {
     PDA::states = states;
 }
 
-void PDA::setEndStates(const std::vector<StatePDA *> &endStates) {
+void PDA::setEndStates(const std::vector<std::string> &endStates) {
     PDA::endStates = endStates;
 }
 
@@ -209,7 +216,7 @@ const std::vector<StatePDA> &PDA::getStates() const {
     return states;
 }
 
-const std::vector<StatePDA *> &PDA::getEndStates() const {
+const std::vector<std::string> &PDA::getEndStates() const {
     return endStates;
 }
 
@@ -244,6 +251,15 @@ PDA::PDA(std::string filename)
             startState = temp;
         }
 
+        if (root.contains("FinalStates"))
+        {
+            for (auto stateName:root["FinalStates"])
+            {
+                finalState = true;
+                if (stateName == name) endStates.emplace_back(temp.stateName);
+            }
+        }
+
     }
 
 
@@ -261,6 +277,7 @@ PDA::PDA(std::string filename)
             }
         }
     }
+
 
     return;
 }
