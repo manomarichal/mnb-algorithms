@@ -31,22 +31,29 @@ CFG::CFG(std::string filename)
     return;
 }
 
-void CFG::print()
+void CFG::print(std::string filename = "default.txt")
 {
+    std::fstream file;
+    file.open(filename, std::fstream::out);
+
     for (auto& production:productions)
     {
+        // voor alle producties voor 1 variable
         for (auto body = production.second.begin();body != production.second.end();body++)
         {
-            std::cout << "\n" <<production.first << " -> ";
 
+            // we write the head
+            file << "\n" <<production.first << " -> ";
+
+            // if the body is empty we write epsilon
             if (body->empty()) std::cout << "e";
             else for (auto var: *body)
             {
-                std::cout << var;
+                file << var;
             }
         }
 
-        std::cout << std::endl;
+        file << std::endl;
     }
 
 }

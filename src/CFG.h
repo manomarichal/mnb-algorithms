@@ -22,7 +22,7 @@ public:
 
     CFG()= default;
 
-    void print();
+    void print(std::string filename);
 
     const std::vector<std::string> &getVariables() const;
 

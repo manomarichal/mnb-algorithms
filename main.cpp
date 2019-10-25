@@ -3,44 +3,20 @@
 #include "./src/PDA.h"
 #include "./src/StatePDA.h"
 #include "./src/algorithms.h"
-int main() {
+int main(int argc, char *argv[])
+{
+    if (argc == 1)
+    {
+        return 0;
+    }
 
-    StatePDA p("p");
-    StatePDA q("q");
-
-    q.addTransition({"1", "Z0"}, &q, push, {"X", "z0"});
-    q.addTransition({"1", "X"}, &q, push, {"X", "X"});
-    q.addTransition({"0", "X"}, &p, nothing, {"X"});
-    q.addTransition({"", "X"}, &q, pop);
-
-    p.addTransition({"1", "X"}, &p, pop);
-    p.addTransition({"0", "Z0"}, &q, nothing, {"Z0"});
-
-    PDA pda;
-    pda.setAlphabet({"1", "0"});
-    pda.setStartState(&q);
-    pda.setStartStackSymbol("Z0");
-    pda.setStates({q, p});
-    pda.setEndStates({p.stateName});
-    pda.setStackAlphabet({"X", "Z0"});
-
-    // PDA TO CFG
-    CFG cfg2 = convertToCfg(pda);
-    cfg2.print();
-
-    // INLEZEN PDA
-    PDA pda2("./testfiles/pda1.json");
-    pda2.convertToDot("pda2.dot");
-    std::string dotstring2 = "dot -Tpng ./pda2.dot -o pda2.png";
-    system(dotstring2.c_str());
-
-    PDA pda3("./testfiles/PDA.json");
-    pda3.convertToDot("pda3.dot");
-    std::string dotstring3 = "dot -Tpng ./pda3.dot -o pda3.png";
-    system(dotstring3.c_str());
-
-
-    if (pda3.inputString("aabbbb")) std::cout << "string geaccepteerd";
-
-    return 0;
+    else if (strcmp(argv[1], "pdatocfg") == 0)
+    {
+        PDA pda = PDA(std::string(argv[2]));
+        pda.convertToDot("./outputfiles/" + std::string(argv[3]));
+        std::string dotstring3 = "dot -Tpng ./outputfiles/" + std::string(argv[3]) + ".dot -o ./outputfiles/" + std::string(argv[3]) + ".png";
+        system(dotstring3.c_str());
+        CFG cfg = convertToCfg(pda);
+        cfg.print("./outputfiles/" + std::string(argv[3]) + ".txt");
+    }
 }

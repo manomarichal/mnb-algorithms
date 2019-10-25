@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(CFG)
+project(indiv)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(CFG main.cpp src/CFG.cpp src/CFG.h src/PDA.cpp src/PDA.h src/StatePDA.cpp src/StatePDA.h src/algorithms.cpp src/algorithms.h)
+add_executable(indiv main.cpp src/CFG.cpp src/CFG.h src/PDA.cpp src/PDA.h src/StatePDA.cpp src/StatePDA.h src/algorithms.cpp src/algorithms.h)
 
 #set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Wnon-virtual-dtor -Wold-style-cast -Wunused -Woverloaded-virtual -Wpedantic -Wconversion -Wsign-conversion -Wnull-dereference -Wdouble-promotion -Wformat=2")
 

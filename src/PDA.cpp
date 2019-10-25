@@ -130,7 +130,7 @@ bool PDA::inputString(std::string input)
 void PDA::convertToDot(std::string filename)
 {
     std::fstream file;
-    file.open(filename, std::fstream::out);
+    file.open(filename +".dot", std::fstream::out);
     file << "digraph {\n" << std::endl;
     file << "rankdir = LR" << std::endl;
 
