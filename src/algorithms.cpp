@@ -19,11 +19,17 @@ void printCykTable(const std::vector<std::vector<std::vector<std::string>>> &tab
     "</style>\n";
 
     file << "<table>";
-    for (u_long x = table.size()-1; x<table.size(); --x) {
+    for (u_long y = table.size()-1; y<table.size(); --y) {
         file << "<tr>\n";
-        for (u_long y = table[x].size()-1; y<table.size(); --y) {
+        for (u_long x = 0; x<table.size(); ++x) {
             file << "<th>";
-            for (auto var:table[x][y]) file << var;
+            if (!table[x][y].empty()) file << "{";
+            else file << "∅";
+            for (auto var:table[x][y]) {
+                file << var;
+                if (var != *--table[x][y].end()) file << ", " ;
+            }
+            if (!table[x][y].empty()) file << "}";
             file << "</th>\n";
         }
         file << "</tr>";
