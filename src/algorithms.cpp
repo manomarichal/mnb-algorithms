@@ -3,7 +3,7 @@
 //
 #include "./algorithms.h"
 
-void printCykTable(const std::vector<std::vector<std::vector<std::string>>> &table, std::string filename)
+void printCykTable(const std::vector<std::vector<std::vector<std::string>>> &table, std::string filename, bool accepted)
 {
     std::fstream file;
     file.open("./outputfiles/" + filename + ".html", std::fstream::out);
@@ -35,6 +35,10 @@ void printCykTable(const std::vector<std::vector<std::vector<std::string>>> &tab
         file << "</tr>";
     }
     file << "</table>";
+
+    if (accepted) file << "String was accepted";
+    else file << "String was not accepted";
+
     file.close();
 }
 
@@ -157,14 +161,16 @@ bool CYK(CFG &cfg, std::vector<std::string> input, std::string filename) {
         }
     }
 
-    printCykTable(table, filename);
 
+    bool accepted = false;
     for(auto var:table[0][input.size()-1])
     {
-        if (var == cfg.getStart()) return true;
+        if (var == cfg.getStart()) accepted = true;
     }
 
-    return false;
+    printCykTable(table, filename, accepted);
+
+    return accepted;
 }
 
 

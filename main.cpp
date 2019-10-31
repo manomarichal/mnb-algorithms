@@ -5,10 +5,6 @@
 #include "./src/algorithms.h"
 int main(int argc, char *argv[])
 {
-    CFG cfg("./testfiles/cfg1.json");
-    cfg.print("./outputfiles/CYK.txt");
-    bool a = CYK(cfg, {"a", "b", "b", "c"}, "CYK1");
-
     if (argc == 1)
     {
         return 0;
@@ -22,5 +18,16 @@ int main(int argc, char *argv[])
         system(dotstring3.c_str());
         CFG cfg = convertToCfg(pda);
         cfg.print("./outputfiles/" + std::string(argv[3]) + ".txt");
+    }
+
+    else if (strcmp(argv[1], "cyk") == 0)
+    {
+        CFG cfg = CFG(std::string(argv[2]));
+        std::vector<std::string> input;
+        for (auto c:std::string(argv[3]))
+        {
+            input.emplace_back(std::string(1,c));
+        }
+        CYK(cfg, input, std::string(argv[4]))
     }
 }
