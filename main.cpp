@@ -5,6 +5,10 @@
 #include "./src/algorithms.h"
 int main(int argc, char *argv[])
 {
+    CFG cfg("./testfiles/cfg1.json");
+    cfg.print("./outputfiles/CYK.txt");
+    bool a = CYK(cfg, {"a", "b", "b", "c"}, "CYK1");
+
     if (argc == 1)
     {
         return 0;

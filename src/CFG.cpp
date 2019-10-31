@@ -55,7 +55,7 @@ void CFG::print(std::string filename = "default.txt")
 
         file << std::endl;
     }
-
+    file.close();
 }
 
 void CFG::addProduction(std::string top, std::string body)

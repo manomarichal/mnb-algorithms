@@ -9,6 +9,8 @@
 #include "./PDA.h"
 
 CFG convertToCfg(PDA &pda);
+bool CYK (CFG &cfg, std::vector<std::string> input, std::string filename);
+
 
 
 #endif //CFG_ALGORITHMS_H
