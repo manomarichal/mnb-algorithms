@@ -23,11 +23,12 @@ int main(int argc, char *argv[])
     else if (strcmp(argv[1], "cyk") == 0)
     {
         CFG cfg = CFG(std::string(argv[2]));
+        cfg.print("./outputfiles/" + std::string(argv[4]) + ".txt");
         std::vector<std::string> input;
         for (auto c:std::string(argv[3]))
         {
             input.emplace_back(std::string(1,c));
         }
-        CYK(cfg, input, std::string(argv[4]))
+        CYK(cfg, input, std::string(argv[4]));
     }
 }
