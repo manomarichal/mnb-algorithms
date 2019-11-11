@@ -6,7 +6,7 @@
 void printCykTable(const std::vector<std::vector<std::vector<std::string>>> &table, std::string filename, bool accepted)
 {
     std::fstream file;
-    file.open("./outputfiles/" + filename + ".html", std::fstream::out);
+    file.open(filename, std::fstream::out);
 
     file << "<style>\n"
     "table {\n"
@@ -48,8 +48,8 @@ generateBody(std::vector<std::string> &stack, std::string body, PDA &pda, CFG &c
              int max) {
     if (max == -1) {
         if (body[0] == '[') {
-            cfg.addProduction(top + body.substr(1, body.size() - 1), {"ε"});
-        } else cfg.addProduction(top + body.substr(2, body.size() - 2), {body[0]});
+            cfg.addProduction("[" + top + body.substr(1, body.size() - 1) + "]", {"ε"});
+        } else cfg.addProduction("[" + top + body.substr(2, body.size() - 2) + "]", {body[0]});
         return;
     };
 
@@ -57,7 +57,7 @@ generateBody(std::vector<std::string> &stack, std::string body, PDA &pda, CFG &c
         for (const auto &state:pda.getStates()) {
             std::string orgBody = body;
             orgBody += stack[level] + state.stateName + "]";
-            cfg.addProduction(top + state.stateName, orgBody);
+            cfg.addProduction("[" + top + state.stateName + "]", orgBody);
         }
         return;
     }

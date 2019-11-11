@@ -36,6 +36,34 @@ void CFG::print(std::string filename = "default.txt")
     std::fstream file;
     file.open(filename, std::fstream::out);
 
+    file << "G = (V, T, R, S), where:\n\n";
+    file << "V = {";
+
+    for (u_int i=0;i<variables.size();i++)
+    {
+        if (variables[i] != "S") file << "[" + variables[i] + "]";
+        else file << variables[i];
+
+
+        if (i != variables.size()-1)
+        {
+            file << ",";
+        }
+    }
+    file << "}\n\nT = {";
+    for (u_int i=0;i<terminals.size();i++)
+    {
+        file << terminals[i];
+
+        if (i != terminals.size()-1)
+        {
+            file << ",";
+        }
+    }
+    file << "}\n\nS = ";
+    file << start;
+
+    file << "\n\nProductions in R:\n";
     for (auto& production:productions)
     {
         // voor alle producties voor 1 variable

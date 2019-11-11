@@ -239,7 +239,7 @@ PDA::PDA(std::string filename)
     for (auto &var: root["StackAlphabet"])
     {
         stackAlphabet.emplace_back(var);
-        if (root["StackAlphabet"] == var) startStackSymbol = var;
+        if (root["StartStack"] == var) startStackSymbol = var;
     }
 
     for (std::string name: root["States"])
